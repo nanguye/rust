@@ -1227,6 +1227,10 @@ fn link_args<'a, B: ArchiveBuilder<'a>>(cmd: &mut dyn Linker,
         cmd.pgo_gen();
     }
 
+    if sess.opts.cg.control_flow_guard.is_some() {
+        cmd.control_flow_guard();
+    }
+
     // FIXME (#2397): At some point we want to rpath our guesses as to
     // where extern libraries might live, based on the
     // addl_lib_search_paths

@@ -120,6 +120,7 @@ pub trait Linker {
     fn no_relro(&mut self);
     fn optimize(&mut self);
     fn pgo_gen(&mut self);
+    fn control_flow_guard(&mut self);
     fn debuginfo(&mut self);
     fn no_default_libraries(&mut self);
     fn build_dylib(&mut self, out_filename: &Path);
@@ -337,6 +338,10 @@ impl<'a> Linker for GccLinker<'a> {
         // the overhead of the initialization should be minor.
         self.cmd.arg("-u");
         self.cmd.arg("__llvm_profile_runtime");
+    }
+
+    fn control_flow_guard(&mut self) {
+        // Windows Control Flow Guard (/guard:cf) is not yet supported by this linker.
     }
 
     fn debuginfo(&mut self) {
@@ -631,6 +636,10 @@ impl<'a> Linker for MsvcLinker<'a> {
         // Nothing needed here.
     }
 
+    fn control_flow_guard(&mut self) {
+        self.cmd.arg("/guard:cf");
+    }
+
     fn debuginfo(&mut self) {
         // This will cause the Microsoft linker to generate a PDB file
         // from the CodeView line tables in the object files.
@@ -835,6 +844,10 @@ impl<'a> Linker for EmLinker<'a> {
         // noop, but maybe we need something like the gnu linker?
     }
 
+    fn control_flow_guard(&mut self) {
+        // Windows Control Flow Guard (/guard:cf) is not yet supported by this linker.
+    }
+
     fn debuginfo(&mut self) {
         // Preserve names or generate source maps depending on debug info
         self.cmd.arg(match self.sess.opts.debuginfo {
@@ -1037,6 +1050,10 @@ impl<'a> Linker for WasmLd<'a> {
     fn pgo_gen(&mut self) {
     }
 
+    fn control_flow_guard(&mut self) {
+        // Windows Control Flow Guard (/guard:cf) is not yet supported by this linker.
+    }
+
     fn debuginfo(&mut self) {
     }
 
@@ -1234,6 +1251,10 @@ impl<'a> Linker for PtxLinker<'a> {
     }
 
     fn pgo_gen(&mut self) {
+    }
+
+    fn control_flow_guard(&mut self) {
+        // Windows Control Flow Guard (/guard:cf) is not yet supported by this linker.
     }
 
     fn no_default_libraries(&mut self) {
