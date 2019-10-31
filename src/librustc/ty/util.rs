@@ -737,20 +737,22 @@ impl<'tcx> TyCtxt<'tcx> {
     }
 }
 
+/// Expands any nested opaque types, caching the expansion
+/// of each (DefId, SubstsRef) pair
 struct OpaqueTypeExpander<'tcx> {
-    // Contains the `DefId`s of the opaque types that are currently being
-    // expanded. When we expand an opaque type we insert the `DefId` of
-    // that type, and when we finish expanding that type we remove the
-    // its `DefId`.
+    /// Contains the `DefId`s of the opaque types that are currently being
+    /// expanded. When we expand an opaque type we insert the `DefId` of
+    /// that type, and when we finish expanding that type we remove the
+    /// its `DefId`.
     seen_opaque_tys: FxHashSet<DefId>,
-    // Cache of all expansions we've seen so far. This is a critical
-    // optimization for some large types produced by `async fn` trees.
+    /// Cache of all expansions we've seen so far. This is a critical
+    /// optimization for some large types produced by `async fn` trees.
     expanded_cache: FxHashMap<(DefId, SubstsRef<'tcx>), Ty<'tcx>>,
     primary_def_id: Option<DefId>,
     found_recursion: bool,
-    // Whether or not to check for recursive opaque types.
-    // This is `true` when we're explicitly checking for opaque type
-    // recursion, and 'false' otherwise to avoid unecessary work.
+    /// Whether or not to check for recursive opaque types.
+    /// This is `true` when we're explicitly checking for opaque type
+    /// recursion, and 'false' otherwise to avoid unecessary work.
     check_recursion: bool,
     tcx: TyCtxt<'tcx>,
 }
