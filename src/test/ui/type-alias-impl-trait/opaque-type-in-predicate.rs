@@ -1,4 +1,5 @@
 // run-pass
+
 // Regression test for issue #65918 - checks that we do not
 // ICE when attempting to normalize a predicate containting
 // opaque types

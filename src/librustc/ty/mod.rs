@@ -1690,7 +1690,7 @@ impl<'tcx> ParamEnv<'tcx> {
     /// which is the default.
     ///
     /// All opaque types in the caller_bounds of the `ParamEnv`
-    /// will be normalized to their underlying types
+    /// will be normalized to their underlying types.
     pub fn with_reveal_all_normalized(self, tcx: TyCtxt<'tcx>) -> Self {
         let caller_bounds = tcx.normalize_impl_trait_types(
             &self.caller_bounds
