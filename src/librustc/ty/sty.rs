@@ -2331,7 +2331,7 @@ impl<'tcx> Const<'tcx> {
         param_env: ParamEnv<'tcx>,
     ) -> &Const<'tcx> {
         let try_const_eval = |did, param_env: ParamEnv<'tcx>, substs| {
-            let param_env_and_substs = param_env.with_reveal_all_normalized().and(substs);
+            let param_env_and_substs = param_env.with_reveal_all_normalized(tcx).and(substs);
 
             // Avoid querying `tcx.const_eval(...)` with any e.g. inference vars.
             if param_env_and_substs.has_local_value() {
