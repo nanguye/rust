@@ -576,7 +576,6 @@ pub mod debuginfo {
             const FlagPublic              = 3;
             const FlagFwdDecl             = (1 << 2);
             const FlagAppleBlock          = (1 << 3);
-            const FlagBlockByrefStruct    = (1 << 4);
             const FlagVirtual             = (1 << 5);
             const FlagArtificial          = (1 << 6);
             const FlagExplicit            = (1 << 7);

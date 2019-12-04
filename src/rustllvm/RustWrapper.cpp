@@ -428,7 +428,6 @@ enum class LLVMRustDIFlags : uint32_t {
   FlagPublic = 3,
   FlagFwdDecl = (1 << 2),
   FlagAppleBlock = (1 << 3),
-  FlagBlockByrefStruct = (1 << 4),
   FlagVirtual = (1 << 5),
   FlagArtificial = (1 << 6),
   FlagExplicit = (1 << 7),
@@ -490,9 +489,6 @@ static DINode::DIFlags fromRust(LLVMRustDIFlags Flags) {
   }
   if (isSet(Flags & LLVMRustDIFlags::FlagAppleBlock)) {
     Result |= DINode::DIFlags::FlagAppleBlock;
-  }
-  if (isSet(Flags & LLVMRustDIFlags::FlagBlockByrefStruct)) {
-    Result |= DINode::DIFlags::FlagBlockByrefStruct;
   }
   if (isSet(Flags & LLVMRustDIFlags::FlagVirtual)) {
     Result |= DINode::DIFlags::FlagVirtual;
@@ -1477,7 +1473,7 @@ struct LLVMRustModuleBuffer {
 
 extern "C" LLVMRustModuleBuffer*
 LLVMRustModuleBufferCreate(LLVMModuleRef M) {
-  auto Ret = llvm::make_unique<LLVMRustModuleBuffer>();
+  auto Ret = std::make_unique<LLVMRustModuleBuffer>();
   {
     raw_string_ostream OS(Ret->data);
     {

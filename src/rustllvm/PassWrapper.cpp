@@ -958,7 +958,7 @@ LLVMRustCreateThinLTOData(LLVMRustThinLTOModule *modules,
       ExportList->second.count(GUID)) ||
       ExportedGUIDs.count(GUID);
   };
-  thinLTOInternalizeAndPromoteInIndex(Ret->Index, isExported);
+  thinLTOInternalizeAndPromoteInIndex(Ret->Index, isExported, isPrevailing);
 
   return Ret.release();
 }
