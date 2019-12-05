@@ -1008,11 +1008,17 @@ inline section_iterator *unwrap(LLVMSectionIteratorRef SI) {
 
 extern "C" size_t LLVMRustGetSectionName(LLVMSectionIteratorRef SI,
                                          const char **Ptr) {
-  StringRef Ret;
-  if (std::error_code EC = (*unwrap(SI))->getName(Ret))
-    report_fatal_error(EC.message());
-  *Ptr = Ret.data();
-  return Ret.size();
+  Expected<StringRef> NameOrErr = (*unwrap(SI))->getName();
+  if (!NameOrErr) {
+    // rustc_codegen_llvm currently doesn't use this error string, but it might be
+    // useful in the future, and in the mean time this tells LLVM that the
+    // error was not ignored and that it shouldn't abort the process.
+    LLVMRustSetLastError(toString(NameOrErr.takeError()).c_str());
+    return 0;
+  }
+  StringRef Name = NameOrErr.get();
+  *Ptr = Name.data();
+  return Name.size();
 }
 
 // LLVMArrayType function does not support 64-bit ElementCount
