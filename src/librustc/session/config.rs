@@ -844,14 +844,11 @@ macro_rules! options {
             Some("one of: `full`, `partial`, or `off`");
         pub const parse_sanitizer: Option<&str> =
             Some("one of: `address`, `leak`, `memory` or `thread`");
-<<<<<<< HEAD:src/librustc/session/config.rs
-=======
         pub const parse_sanitizer_list: Option<&str> =
             Some("comma separated list of sanitizers");
         pub const parse_sanitizer_memory_track_origins: Option<&str> = None;
         pub const parse_cfguard: Option<&str> =
             Some("either `nochecks` or `checks`");
->>>>>>> d2650f6afa3... Add support for control flow guard on Windows:src/librustc_session/config.rs
         pub const parse_linker_flavor: Option<&str> =
             Some(::rustc_target::spec::LinkerFlavor::one_of());
         pub const parse_optimization_fuel: Option<&str> =
