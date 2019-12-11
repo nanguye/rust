@@ -73,6 +73,13 @@ impl FromStr for Sanitizer {
     }
 }
 
+#[derive(Clone, Hash, Debug)]
+pub enum CFGuard {
+    Nochecks,   // /guard:cf,nochecks
+    Checks,     // /guard:cf
+    // Other options may be needed here in future.
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Hash)]
 pub enum OptLevel {
     No,         // -O0
@@ -883,6 +890,8 @@ macro_rules! options {
         pub const parse_sanitizer_list: Option<&str> =
             Some("comma separated list of sanitizers");
         pub const parse_sanitizer_memory_track_origins: Option<&str> = None;
+        pub const parse_cfguard: Option<&str> =
+            Some("either `nochecks` or `checks`");
         pub const parse_linker_flavor: Option<&str> =
             Some(::rustc_target::spec::LinkerFlavor::one_of());
         pub const parse_optimization_fuel: Option<&str> =
@@ -908,7 +917,7 @@ macro_rules! options {
     #[allow(dead_code)]
     mod $mod_set {
         use super::{$struct_name, Passes, Sanitizer, LtoCli, LinkerPluginLto, SwitchWithOptPath,
-            SymbolManglingVersion};
+            SymbolManglingVersion, CFGuard};
         use rustc_target::spec::{LinkerFlavor, MergeFunctions, PanicStrategy, RelroLevel};
         use std::path::PathBuf;
         use std::str::FromStr;
@@ -1119,6 +1128,15 @@ macro_rules! options {
             }
         }
 
+        fn parse_cfguard(slote: &mut Option<CFGuard>, v: Option<&str>) -> bool {
+            match v {
+                Some("nochecks") => *slote = Some(CFGuard::Nochecks),
+                Some("checks") => *slote = Some(CFGuard::Checks),
+                _ => return false,
+            }
+            true
+        }
+
         fn parse_linker_flavor(slote: &mut Option<LinkerFlavor>, v: Option<&str>) -> bool {
             match v.and_then(LinkerFlavor::from_str) {
                 Some(lf) => *slote = Some(lf),
@@ -1317,6 +1335,8 @@ options! {CodegenOptions, CodegenSetter, basic_codegen_options,
         "compile the program with profiling instrumentation"),
     profile_use: Option<PathBuf> = (None, parse_opt_pathbuf, [TRACKED],
         "use the given `.profdata` file for profile-guided optimization"),
+    control_flow_guard: Option<CFGuard> = (None, parse_cfguard, [UNTRACKED],
+        "use Windows Control Flow Guard (`nochecks` or `checks`)"),
 }
 
 options! {DebuggingOptions, DebuggingSetter, basic_debugging_options,
@@ -2960,7 +2980,7 @@ mod dep_tracking {
     use std::hash::Hash;
     use std::path::PathBuf;
     use std::collections::hash_map::DefaultHasher;
-    use super::{CrateType, DebugInfo, ErrorOutputType, OptLevel, OutputTypes,
+    use super::{CrateType, CFGuard, DebugInfo, ErrorOutputType, OptLevel, OutputTypes,
                 Passes, Sanitizer, LtoCli, LinkerPluginLto, SwitchWithOptPath,
                 SymbolManglingVersion};
     use rustc_target::spec::{MergeFunctions, PanicStrategy, RelroLevel, TargetTriple};
@@ -3027,6 +3047,7 @@ mod dep_tracking {
     impl_dep_tracking_hash_via_hash!(NativeLibraryKind);
     impl_dep_tracking_hash_via_hash!(Sanitizer);
     impl_dep_tracking_hash_via_hash!(Option<Sanitizer>);
+    impl_dep_tracking_hash_via_hash!(CFGuard);
     impl_dep_tracking_hash_via_hash!(TargetTriple);
     impl_dep_tracking_hash_via_hash!(Edition);
     impl_dep_tracking_hash_via_hash!(LinkerPluginLto);

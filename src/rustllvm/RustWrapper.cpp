@@ -433,7 +433,6 @@ enum class LLVMRustDIFlags : uint32_t {
   FlagPublic = 3,
   FlagFwdDecl = (1 << 2),
   FlagAppleBlock = (1 << 3),
-  FlagBlockByrefStruct = (1 << 4),
   FlagVirtual = (1 << 5),
   FlagArtificial = (1 << 6),
   FlagExplicit = (1 << 7),
@@ -495,9 +494,6 @@ static DINode::DIFlags fromRust(LLVMRustDIFlags Flags) {
   }
   if (isSet(Flags & LLVMRustDIFlags::FlagAppleBlock)) {
     Result |= DINode::DIFlags::FlagAppleBlock;
-  }
-  if (isSet(Flags & LLVMRustDIFlags::FlagBlockByrefStruct)) {
-    Result |= DINode::DIFlags::FlagBlockByrefStruct;
   }
   if (isSet(Flags & LLVMRustDIFlags::FlagVirtual)) {
     Result |= DINode::DIFlags::FlagVirtual;
@@ -998,11 +994,17 @@ inline section_iterator *unwrap(LLVMSectionIteratorRef SI) {
 
 extern "C" size_t LLVMRustGetSectionName(LLVMSectionIteratorRef SI,
                                          const char **Ptr) {
-  StringRef Ret;
-  if (std::error_code EC = (*unwrap(SI))->getName(Ret))
-    report_fatal_error(EC.message());
-  *Ptr = Ret.data();
-  return Ret.size();
+  Expected<StringRef> NameOrErr = (*unwrap(SI))->getName();
+  if (!NameOrErr) {
+    // rustc_codegen_llvm currently doesn't use this error string, but it might be
+    // useful in the future, and in the mean time this tells LLVM that the
+    // error was not ignored and that it shouldn't abort the process.
+    LLVMRustSetLastError(toString(NameOrErr.takeError()).c_str());
+    return 0;
+  }
+  StringRef Name = NameOrErr.get();
+  *Ptr = Name.data();
+  return Name.size();
 }
 
 // LLVMArrayType function does not support 64-bit ElementCount
@@ -1450,7 +1452,7 @@ struct LLVMRustModuleBuffer {
 
 extern "C" LLVMRustModuleBuffer*
 LLVMRustModuleBufferCreate(LLVMModuleRef M) {
-  auto Ret = llvm::make_unique<LLVMRustModuleBuffer>();
+  auto Ret = std::make_unique<LLVMRustModuleBuffer>();
   {
     raw_string_ostream OS(Ret->data);
     {

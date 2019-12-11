@@ -1,6 +1,7 @@
 [workspace]
 members = [
   "src/bootstrap",
+  "src/cfg_experiment",
   "src/rustc",
   "src/libstd",
   "src/libtest",

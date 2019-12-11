@@ -89,7 +89,7 @@ extern "C" void LLVMRustDestroyArchive(LLVMRustArchiveRef RustArchive) {
 extern "C" LLVMRustArchiveIteratorRef
 LLVMRustArchiveIteratorNew(LLVMRustArchiveRef RustArchive) {
   Archive *Archive = RustArchive->getBinary();
-  std::unique_ptr<Error> Err = llvm::make_unique<Error>(Error::success());
+  std::unique_ptr<Error> Err = std::make_unique<Error>(Error::success());
   auto Cur = Archive->child_begin(*Err);
   if (*Err) {
     LLVMRustSetLastError(toString(std::move(*Err)).c_str());

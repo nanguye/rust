@@ -849,7 +849,7 @@ LLVMRustCreateThinLTOData(LLVMRustThinLTOModule *modules,
                           int num_modules,
                           const char **preserved_symbols,
                           int num_symbols) {
-  auto Ret = llvm::make_unique<LLVMRustThinLTOData>();
+  auto Ret = std::make_unique<LLVMRustThinLTOData>();
 
   // Load each module's summary and merge it into one combined index
   for (int i = 0; i < num_modules; i++) {
@@ -950,7 +950,7 @@ LLVMRustCreateThinLTOData(LLVMRustThinLTOModule *modules,
       ExportList->second.count(GUID)) ||
       ExportedGUIDs.count(GUID);
   };
-  thinLTOInternalizeAndPromoteInIndex(Ret->Index, isExported);
+  thinLTOInternalizeAndPromoteInIndex(Ret->Index, isExported, isPrevailing);
 
   return Ret.release();
 }
@@ -1081,7 +1081,7 @@ struct LLVMRustThinLTOBuffer {
 
 extern "C" LLVMRustThinLTOBuffer*
 LLVMRustThinLTOBufferCreate(LLVMModuleRef M) {
-  auto Ret = llvm::make_unique<LLVMRustThinLTOBuffer>();
+  auto Ret = std::make_unique<LLVMRustThinLTOBuffer>();
   {
     raw_string_ostream OS(Ret->data);
     {
