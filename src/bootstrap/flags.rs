@@ -139,6 +139,7 @@ To learn more about a subcommand, run `./x.py <subcommand> -h`"
             "VALUE",
         );
         opts.optopt("", "error-format", "rustc error format", "FORMAT");
+        opts.optflag("cfg", "control-flow-guard", "Enable Windows Control Flow Guard.");
 
         // fn usage()
         let usage =
@@ -467,6 +468,7 @@ Arguments:
             jobs: matches.opt_str("jobs").map(|j| j.parse().expect("`jobs` should be a number")),
             cmd,
             incremental: matches.opt_present("incremental"),
+            cfg: matches.opt_present("cfg"),
             exclude: split(&matches.opt_strs("exclude"))
                 .into_iter()
                 .map(|p| p.into())
