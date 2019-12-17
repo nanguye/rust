@@ -1,55 +1,42 @@
 [submodule "src/rust-installer"]
 	path = src/tools/rust-installer
 	url = https://github.com/rust-lang/rust-installer.git
-	branch = master
 [submodule "src/doc/nomicon"]
 	path = src/doc/nomicon
 	url = https://github.com/rust-lang/nomicon.git
-	branch = master
 [submodule "src/tools/cargo"]
 	path = src/tools/cargo
 	url = https://github.com/rust-lang/cargo.git
-	branch = master
 [submodule "src/doc/reference"]
 	path = src/doc/reference
 	url = https://github.com/rust-lang/reference.git
-	branch = master
 [submodule "src/doc/book"]
 	path = src/doc/book
 	url = https://github.com/rust-lang/book.git
-	branch = master
 [submodule "src/tools/rls"]
 	path = src/tools/rls
 	url = https://github.com/rust-lang-nursery/rls.git
-	branch = master
 [submodule "src/tools/clippy"]
 	path = src/tools/clippy
 	url = https://github.com/rust-lang-nursery/rust-clippy.git
-	branch = master
 [submodule "src/tools/rustfmt"]
 	path = src/tools/rustfmt
 	url = https://github.com/rust-lang-nursery/rustfmt.git
-	branch = master
 [submodule "src/tools/miri"]
 	path = src/tools/miri
 	url = https://github.com/rust-lang/miri.git
-	branch = master
 [submodule "src/doc/rust-by-example"]
 	path = src/doc/rust-by-example
 	url = https://github.com/rust-lang/rust-by-example.git
-	branch = master
 [submodule "src/stdarch"]
 	path = src/stdarch
 	url = https://github.com/rust-lang/stdarch.git
-	branch = master
 [submodule "src/doc/rustc-guide"]
 	path = src/doc/rustc-guide
 	url = https://github.com/rust-lang/rustc-guide.git
-	branch = master
 [submodule "src/doc/edition-guide"]
 	path = src/doc/edition-guide
 	url = https://github.com/rust-lang/edition-guide.git
-	branch = master
 [submodule "src/llvm-project"]
 	path = src/llvm-project
 	url = https://github.com/nanguye/llvm-project.git
@@ -57,4 +44,3 @@
 [submodule "src/doc/embedded-book"]
 	path = src/doc/embedded-book
 	url = https://github.com/rust-embedded/book.git
-	branch = master
