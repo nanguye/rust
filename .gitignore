@@ -13,6 +13,7 @@
 .hg/
 .hgignore
 .idea
+*.code-workspace
 *.iml
 __pycache__/
 *.py[cod]
