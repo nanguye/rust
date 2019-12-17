@@ -60,6 +60,7 @@ pub struct Config {
     pub jobs: Option<u32>,
     pub cmd: Subcommand,
     pub incremental: bool,
+    pub cfg: bool,
     pub dry_run: bool,
 
     pub deny_warnings: bool,
@@ -400,6 +401,7 @@ impl Config {
         config.incremental = flags.incremental;
         config.dry_run = flags.dry_run;
         config.keep_stage = flags.keep_stage;
+        config.cfg = flags.cfg;
         config.bindir = "bin".into(); // default
         if let Some(value) = flags.deny_warnings {
             config.deny_warnings = value;

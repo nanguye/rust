@@ -13,7 +13,7 @@ impl Drop for TargetObject {
     fn drop(&mut self) {
         println!("Destructor running for a TargetObject");
     }
-} 
+}
 fn main()
 {
     unsafe

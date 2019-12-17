@@ -1004,6 +1004,11 @@ impl<'a> Builder<'a> {
             }
         }
 
+        if self.config.cfg && compiler.stage > 0
+        {
+            rustflags.arg("-Ccontrol-flow-guard=checks");
+        }
+
         if let Some(host_linker) = self.linker(compiler.host) {
             cargo.env("RUSTC_HOST_LINKER", host_linker);
         }
@@ -1266,6 +1271,7 @@ impl<'a> Builder<'a> {
     /// needed to ensure that all dependencies are built.
     pub fn ensure<S: Step>(&'a self, step: S) -> S::Output {
         {
+            //println!("I'm here");
             let mut stack = self.stack.borrow_mut();
             for stack_step in stack.iter() {
                 // should skip
