@@ -15,7 +15,7 @@ fn search<T: Ord + Eq>(arr: &mut [T], a: &T) -> Result<usize, ()> {
 #[no_mangle]
 pub fn position_no_bounds_check(y: &mut [u32], x: &u32, z: &u32) -> bool {
     // This contains "call assume" so we cannot just rule out all calls
-    // CHECK-NOT: panic_bounds_check
+    // <---CHECK-NOT: panic_bounds_check--->
     if let Ok(p) = search(y, x) {
       y[p] == *z
     } else {
