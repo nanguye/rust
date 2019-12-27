@@ -1,5 +1,5 @@
 
-Dump of file D:\\\\Git\\\\Rust\\\\rust\\\\build\\\\x86_64-pc-windows-msvc\\\\test\\\\run-fail\\cfg-fail\\a.exe
+Dump of file D:\\Git\\Rust\\rust\\build\\x86_64-pc-windows-msvc\\test\\run-fail\\cfg-fail\\a.exe
 
 File Type: EXECUTABLE IMAGE
 
@@ -21,16 +21,16 @@ main:
   000000014000104A: 48 8D 05 DF FF FF  lea         rax,[140001030h]
                     FF
   0000000140001051: 48 89 44 24 20     mov         qword ptr [rsp+20h],rax
-  0000000140001056: 48 8D 15 B3 11 00  lea         rdx,[anon.3850acda1a889ea7b0553d7671eaf104.0.llvm.868390356694352746]
+  0000000140001056: 48 8D 15 B3 11 00  lea         rdx,[anon.5363a79c878434998c7c5a129a213cad.0.llvm.7255667881904126961]
                     00
   000000014000105D: 48 8D 4C 24 20     lea         rcx,[rsp+20h]
-  0000000140001062: E8 09 00 00 00     call        _ZN3std2rt19lang_start_internal17hfb96772efc8db8faE
+  0000000140001062: E8 09 00 00 00     call        _ZN3std2rt19lang_start_internal17h893705af7ddf4cb3E
   0000000140001067: 90                 nop
   0000000140001068: 48 83 C4 28        add         rsp,28h
   000000014000106C: C3                 ret
   000000014000106D: CC CC CC                                         ллл
-_ZN3std2rt19lang_start_internal17hfb96772efc8db8faE:
-  0000000140001070: FF 25 F2 10 00 00  jmp         qword ptr [__imp__ZN3std2rt19lang_start_internal17hfb96772efc8db8faE]
+_ZN3std2rt19lang_start_internal17h893705af7ddf4cb3E:
+  0000000140001070: FF 25 F2 10 00 00  jmp         qword ptr [__imp__ZN3std2rt19lang_start_internal17h893705af7ddf4cb3E]
   0000000140001076: CC CC CC CC CC CC CC CC CC CC                    лллллллллл
 _guard_check_icall_nop:
   0000000140001080: C2 00 00           ret         0

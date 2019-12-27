@@ -1,3 +1,7 @@
+// no-system-llvm
+// compile-flags: -C control-flow-guard=checks
+// failure-status: -1073740791
+
 type FunPtr = fn(i32)->i32;
 fn foo(a: i32) -> i32
 {
