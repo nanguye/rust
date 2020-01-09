@@ -1,4 +1,4 @@
-// compile-flags: -C control-flow-guard=checks -C debuginfo=2 -C opt-level=0
+// compile-flags: -C control-flow-guard=checks -C debuginfo=2
 // error-pattern:
 // failure-status: -1073740791
 
@@ -13,13 +13,17 @@ struct TargetObject
 {
     _fun: FunPtr,
 }
-fn main()
+fn unsafeFun(offset: isize)
 {
     unsafe
     {
         let t_object = TargetObject{ _fun: foo};
         let pointer: *const TargetObject = &t_object;
-        ((*pointer.offset(1))._fun)(1);
+        ((*pointer.offset(offset))._fun)(1);
         println!("Ending");
     }
+}
+fn main()
+{
+    unsafeFun(1);
 }
