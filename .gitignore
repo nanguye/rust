@@ -33,6 +33,7 @@ __pycache__/
 /llvm/
 /mingw-build/
 /experiment-ir/
+/experiment_ir/
 # Created by default with `src/ci/docker/run.sh`:
 /obj/
 /rustllvm/
