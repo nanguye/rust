@@ -66,6 +66,7 @@ o("cxxflags", "llvm.cxxflags", "build LLVM with these extra compiler flags")
 o("ldflags", "llvm.ldflags", "build LLVM with these extra linker flags")
 
 o("llvm-libunwind", "rust.llvm_libunwind", "use LLVM libunwind")
+o("llvm-cfg", "rust.llvm_cfg", "Enable LLVM control flow guard check during the boostrap build of the compiler.")
 
 # Optimization and debugging options. These may be overridden by the release
 # channel, etc.

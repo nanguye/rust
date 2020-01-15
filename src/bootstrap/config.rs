@@ -328,6 +328,7 @@ struct Rust {
     jemalloc: Option<bool>,
     test_compare_mode: Option<bool>,
     llvm_libunwind: Option<bool>,
+    llvm_cfg: Option<bool>,
 }
 
 /// TOML representation of how each build target is configured.
@@ -555,6 +556,7 @@ impl Config {
             set(&mut config.channel, rust.channel.clone());
             set(&mut config.rust_dist_src, rust.dist_src);
             set(&mut config.verbose_tests, rust.verbose_tests);
+            set(&mut config.cfg, rust.llvm_cfg);
             // in the case "false" is set explicitly, do not overwrite the command line args
             if let Some(true) = rust.incremental {
                 config.incremental = true;
