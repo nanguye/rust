@@ -111,18 +111,18 @@
 # nightlies are already produced for. The current platform must be able to run
 # binaries of this build triple and the nightly will be used to bootstrap the
 # first compiler.
-#build = "x86_64-unknown-linux-gnu"    # defaults to your host platform
+build = "x86_64-pc-windows-msvc"    # defaults to your host platform
 
 # In addition to the build triple, other triples to produce full compiler
 # toolchains for. Each of these triples will be bootstrapped from the build
 # triple and then will continue to bootstrap themselves. This platform must
 # currently be able to run all of the triples provided here.
-#host = ["x86_64-unknown-linux-gnu"]   # defaults to just the build triple
+host = ["x86_64-pc-windows-msvc"]   # defaults to just the build triple
 
 # In addition to all host triples, other triples to produce the standard library
 # for. Each host triple will be used to produce a copy of the standard library
 # for each target triple.
-#target = ["x86_64-unknown-linux-gnu"] # defaults to just the build triple
+#target = ["x86_64-pc-windows-msvc","aarch64-pc-windows-msvc"] # defaults to just the build triple
 
 # Instead of downloading the src/stage0.txt version of Cargo specified, use
 # this Cargo binary instead to build all Rust code
