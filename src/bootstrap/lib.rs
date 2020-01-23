@@ -1143,7 +1143,7 @@ impl Build {
         self.verbose_than(1, &format!("Copy {:?} to {:?}", src, dst));
         if src == dst { return; }
         let _ = fs::remove_file(&dst);
-        println!(src.to_str().expect("INVALID PATH"));
+        println!("{}", src.to_str().expect("INVALID PATH"));
         let metadata = t!(src.symlink_metadata());
         if metadata.file_type().is_symlink() {
             let link = t!(fs::read_link(src));
