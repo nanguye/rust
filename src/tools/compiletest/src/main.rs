@@ -567,6 +567,7 @@ pub fn test_opts(config: &Config) -> test::TestOpts {
         test_threads: None,
         skip: vec![],
         list: false,
+        time_options: None,
         options: test::Options::new(),
     }
 }
@@ -703,6 +704,7 @@ pub fn make_test(config: &Config, testpaths: &TestPaths) -> Vec<test::TestDescAn
                     ignore,
                     should_panic,
                     allow_fail: false,
+                    test_type: TestType::Unknown
                 },
                 testfn: make_test_closure(config, early_props.ignore, testpaths, revision),
             }
