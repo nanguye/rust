@@ -704,7 +704,7 @@ pub fn make_test(config: &Config, testpaths: &TestPaths) -> Vec<test::TestDescAn
                     ignore,
                     should_panic,
                     allow_fail: false,
-                    test_type: TestType::Unknown
+                    test_type: test::TestType::Unknown
                 },
                 testfn: make_test_closure(config, early_props.ignore, testpaths, revision),
             }
