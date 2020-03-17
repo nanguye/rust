@@ -1,6 +1,6 @@
 //! Checks the licenses of third-party dependencies by inspecting vendors.
 
-use std::collections::{BTreeSet, HashMap, HashSet};
+use std::collections::{BTreeSet, HashSet, HashMap};
 use std::fs;
 use std::path::Path;
 use std::process::Command;
@@ -32,6 +32,7 @@ const EXCEPTIONS: &[&str] = &[
     "arrayref",           // BSD-2-Clause, mdbook via handlebars via pest
     "thread-id",          // Apache-2.0, mdbook
     "toml-query",         // MPL-2.0, mdbook
+    "toml-query_derive",  // Matthias Beyer <mail@beyermatthias.de>
     "is-match",           // MPL-2.0, mdbook
     "cssparser",          // MPL-2.0, rustdoc
     "smallvec",           // MPL-2.0, rustdoc
@@ -59,12 +60,13 @@ const EXCEPTIONS: &[&str] = &[
     "dunce",              // CC0-1.0 mdbook-linkcheck
     "codespan-reporting", // Apache-2.0 mdbook-linkcheck
     "codespan",           // Apache-2.0 mdbook-linkcheck
-    "crossbeam-channel",  // MIT/Apache-2.0 AND BSD-2-Clause, cargo
 ];
 
 /// Which crates to check against the whitelist?
-const WHITELIST_CRATES: &[CrateVersion<'_>] =
-    &[CrateVersion("rustc", "0.0.0"), CrateVersion("rustc_codegen_llvm", "0.0.0")];
+const WHITELIST_CRATES: &[CrateVersion<'_>] = &[
+    CrateVersion("rustc", "0.0.0"),
+    CrateVersion("rustc_codegen_llvm", "0.0.0"),
+];
 
 /// Whitelist of crates rustc is allowed to depend on. Avoid adding to the list if possible.
 const WHITELIST: &[Crate<'_>] = &[
@@ -168,12 +170,9 @@ const WHITELIST: &[Crate<'_>] = &[
     Crate("termcolor"),
     Crate("terminon"),
     Crate("termion"),
-    Crate("termize"),
+    Crate("term_size"),
     Crate("thread_local"),
     Crate("ucd-util"),
-    Crate("unicode-normalization"),
-    Crate("unicode-script"),
-    Crate("unicode-security"),
     Crate("unicode-width"),
     Crate("unicode-xid"),
     Crate("unreachable"),
@@ -246,6 +245,12 @@ impl<'a> From<CrateVersion<'a>> for Crate<'a> {
     }
 }
 
+/// Checks if a given path ends with the pattern /vendor/[exception] where [exception]
+/// is the name of a vendored crate for Rust.
+fn path_contains_exception(path: &Path, parent: &Path, exception: &str) -> bool {
+    return path.ends_with(exception) && parent.ends_with("vendor")
+}
+
 /// Checks the dependency at the given path. Changes `bad` to `true` if a check failed.
 ///
 /// Specifically, this checks that the license is correct.
@@ -260,8 +265,9 @@ pub fn check(path: &Path, bad: &mut bool) {
 
         // Skip our exceptions.
         let is_exception = EXCEPTIONS.iter().any(|exception| {
-            dir.path().to_str().unwrap().contains(&format!("vendor/{}", exception))
+            path_contains_exception(&dir.path(), dir.path().parent().unwrap(), exception)
         });
+
         if is_exception {
             continue;
         }
@@ -407,17 +413,20 @@ fn check_crate_duplicate(resolve: &Resolve, bad: &mut bool) {
         // These two crates take quite a long time to build, so don't allow two versions of them
         // to accidentally sneak into our dependency graph, in order to ensure we keep our CI times
         // under control.
+
         "cargo",
         "rustc-ap-syntax",
     ];
     let mut name_to_id: HashMap<_, Vec<_>> = HashMap::new();
     for node in resolve.nodes.iter() {
-        name_to_id.entry(node.id.split_whitespace().next().unwrap()).or_default().push(&node.id);
+        name_to_id.entry(node.id.split_whitespace().next().unwrap())
+            .or_default()
+            .push(&node.id);
     }
 
     for name in FORBIDDEN_TO_HAVE_DUPLICATES {
         if name_to_id[name].len() <= 1 {
-            continue;
+            continue
         }
         println!("crate `{}` is duplicated in `Cargo.lock`", name);
         for id in name_to_id[name].iter() {
