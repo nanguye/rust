@@ -1,6 +1,6 @@
 //! Checks the licenses of third-party dependencies by inspecting vendors.
 
-use std::collections::{BTreeSet, HashSet, HashMap};
+use std::collections::{BTreeSet, HashMap, HashSet};
 use std::fs;
 use std::path::Path;
 use std::process::Command;
@@ -60,13 +60,12 @@ const EXCEPTIONS: &[&str] = &[
     "dunce",              // CC0-1.0 mdbook-linkcheck
     "codespan-reporting", // Apache-2.0 mdbook-linkcheck
     "codespan",           // Apache-2.0 mdbook-linkcheck
+    "crossbeam-channel",  // MIT/Apache-2.0 AND BSD-2-Clause, cargo
 ];
 
 /// Which crates to check against the whitelist?
-const WHITELIST_CRATES: &[CrateVersion<'_>] = &[
-    CrateVersion("rustc", "0.0.0"),
-    CrateVersion("rustc_codegen_llvm", "0.0.0"),
-];
+const WHITELIST_CRATES: &[CrateVersion<'_>] =
+    &[CrateVersion("rustc", "0.0.0"), CrateVersion("rustc_codegen_llvm", "0.0.0")];
 
 /// Whitelist of crates rustc is allowed to depend on. Avoid adding to the list if possible.
 const WHITELIST: &[Crate<'_>] = &[
@@ -170,9 +169,12 @@ const WHITELIST: &[Crate<'_>] = &[
     Crate("termcolor"),
     Crate("terminon"),
     Crate("termion"),
-    Crate("term_size"),
+    Crate("termize"),
     Crate("thread_local"),
     Crate("ucd-util"),
+    Crate("unicode-normalization"),
+    Crate("unicode-script"),
+    Crate("unicode-security"),
     Crate("unicode-width"),
     Crate("unicode-xid"),
     Crate("unreachable"),
@@ -413,20 +415,17 @@ fn check_crate_duplicate(resolve: &Resolve, bad: &mut bool) {
         // These two crates take quite a long time to build, so don't allow two versions of them
         // to accidentally sneak into our dependency graph, in order to ensure we keep our CI times
         // under control.
-
         "cargo",
         "rustc-ap-syntax",
     ];
     let mut name_to_id: HashMap<_, Vec<_>> = HashMap::new();
     for node in resolve.nodes.iter() {
-        name_to_id.entry(node.id.split_whitespace().next().unwrap())
-            .or_default()
-            .push(&node.id);
+        name_to_id.entry(node.id.split_whitespace().next().unwrap()).or_default().push(&node.id);
     }
 
     for name in FORBIDDEN_TO_HAVE_DUPLICATES {
         if name_to_id[name].len() <= 1 {
-            continue
+            continue;
         }
         println!("crate `{}` is duplicated in `Cargo.lock`", name);
         for id in name_to_id[name].iter() {
