@@ -32,6 +32,7 @@ const EXCEPTIONS: &[&str] = &[
     "arrayref",           // BSD-2-Clause, mdbook via handlebars via pest
     "thread-id",          // Apache-2.0, mdbook
     "toml-query",         // MPL-2.0, mdbook
+    "toml-query_derive",  // Matthias Beyer <mail@beyermatthias.de>
     "is-match",           // MPL-2.0, mdbook
     "cssparser",          // MPL-2.0, rustdoc
     "smallvec",           // MPL-2.0, rustdoc
@@ -246,6 +247,12 @@ impl<'a> From<CrateVersion<'a>> for Crate<'a> {
     }
 }
 
+/// Checks if a given path ends with the pattern /vendor/[exception] where [exception]
+/// is the name of a vendored crate for Rust.
+fn path_contains_exception(path: &Path, parent: &Path, exception: &str) -> bool {
+    return path.ends_with(exception) && parent.ends_with("vendor")
+}
+
 /// Checks the dependency at the given path. Changes `bad` to `true` if a check failed.
 ///
 /// Specifically, this checks that the license is correct.
@@ -260,8 +267,9 @@ pub fn check(path: &Path, bad: &mut bool) {
 
         // Skip our exceptions.
         let is_exception = EXCEPTIONS.iter().any(|exception| {
-            dir.path().to_str().unwrap().contains(&format!("vendor/{}", exception))
+            path_contains_exception(&dir.path(), dir.path().parent().unwrap(), exception)
         });
+
         if is_exception {
             continue;
         }
